@@ -1,0 +1,9 @@
+name: fabo-challenge-plugin
+version: 2.0
+main: com.mgvpri.fabo.specialplugin.SpecialPlugin
+api-version: 1.21
+authors: [mgvpri]
+description: special plugin for fabo
+
+libraries:
+  - net.axay:kspigot:1.21.0
