@@ -1,4 +1,4 @@
-rootProject.name = "fabo-special-plugin"
+rootProject.name = "fabo-langzeit-plugin"
 
 pluginManagement {
     repositories {

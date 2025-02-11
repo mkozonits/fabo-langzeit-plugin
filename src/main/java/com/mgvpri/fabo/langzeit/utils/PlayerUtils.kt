@@ -1,4 +1,4 @@
-package com.mgvpri.fabo.specialplugin.utils
+package com.mgvpri.fabo.langzeit.utils
 
 import org.bukkit.Bukkit
 import org.bukkit.Sound

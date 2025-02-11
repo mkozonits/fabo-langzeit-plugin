@@ -1,4 +1,4 @@
-package com.mgvpri.fabo.specialplugin.utils
+package com.mgvpri.fabo.langzeit.utils
 
 import java.io.File
 import java.nio.file.Files

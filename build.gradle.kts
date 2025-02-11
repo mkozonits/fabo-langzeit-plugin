@@ -6,7 +6,7 @@ plugins {
     id("io.papermc.paperweight.userdev") version "1.7.7"
 }
 
-group = "com.mgvpri.fabo.specialplugin"
+group = "com.mgvpri.fabo.langzeit"
 version = "2.0"
 
 repositories {

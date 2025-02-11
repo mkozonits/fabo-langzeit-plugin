@@ -1,9 +1,11 @@
-name: fabo-challenge-plugin
+name: fabo-langzeit-plugin
 version: 2.0
-main: com.mgvpri.fabo.specialplugin.SpecialPlugin
+main: com.mgvpri.fabo.langzeit.LangzeitPlugin
 api-version: 1.21
 authors: [mgvpri]
-description: special plugin for fabo
+description: langzeit plugin for fabo
+
+depend: [fabo-rank-plugin]
 
 libraries:
   - net.axay:kspigot:1.21.0

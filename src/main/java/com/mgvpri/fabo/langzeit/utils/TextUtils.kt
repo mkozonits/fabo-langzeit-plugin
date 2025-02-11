@@ -1,4 +1,4 @@
-package com.mgvpri.fabo.specialplugin.utils
+package com.mgvpri.fabo.langzeit.utils
 
 import net.axay.kspigot.chat.LiteralTextBuilder
 import net.axay.kspigot.chat.literalText
@@ -15,8 +15,14 @@ fun LiteralTextBuilder.tabArrow() = text("    » ") {
 fun LiteralTextBuilder.grayText(str: String) = text(str) {
     color = NamedTextColor.GRAY
 }
+fun LiteralTextBuilder.darkGrayText(str: String) = text(str) {
+    color = NamedTextColor.DARK_GRAY
+}
 fun LiteralTextBuilder.whiteText(str: String) = text(str) {
     color = NamedTextColor.WHITE
+}
+fun LiteralTextBuilder.yellowText(str: String) = text(str) {
+    color = NamedTextColor.YELLOW
 }
 
 fun LiteralTextBuilder.whiteBoldText(str: String) = text(str) {
@@ -27,8 +33,8 @@ fun LiteralTextBuilder.serverInfo() = listOf(
     text("| ") {
         color = NamedTextColor.DARK_GRAY
     },
-    whiteBoldText("Challenge"),
-    grayText(" x ")
+    whiteBoldText("Langzeit"),
+    darkGrayText(" x ")
 )
 
 fun LiteralTextBuilder.serverError() = listOf(
@@ -40,7 +46,7 @@ fun LiteralTextBuilder.serverError() = listOf(
 
 fun String.serverInfo() = literalText {
     serverInfo()
-    text(this@serverInfo)
+    grayText(this@serverInfo)
 }
 
 fun String.serverError() = literalText {

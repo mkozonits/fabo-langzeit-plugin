@@ -1,4 +1,4 @@
-package com.mgvpri.fabo.specialplugin.service
+package com.mgvpri.fabo.langzeit.service
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit

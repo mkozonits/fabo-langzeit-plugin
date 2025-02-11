@@ -1,4 +1,4 @@
-package com.mgvpri.fabo.specialplugin.service
+package com.mgvpri.fabo.langzeit.service
 
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.bossbar.BossBar.bossBar
@@ -23,6 +23,12 @@ object BossBarManager {
         bossBar.progress(progress)
         bossBar.color(color)
         bossBars[p.uniqueId] = bossBar
+    }
+
+    fun removeAllPlayerBossBars() {
+        for (p in Bukkit.getOnlinePlayers()) {
+            removePlayerBossBar(p)
+        }
     }
 
     fun removePlayerBossBar(p: Player) {
