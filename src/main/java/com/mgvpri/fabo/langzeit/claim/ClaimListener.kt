@@ -1,6 +1,12 @@
 package com.mgvpri.fabo.langzeit.claim
 
+import com.mgvpri.fabo.langzeit.utils.grayText
+import com.mgvpri.fabo.langzeit.utils.whiteText
+import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
+import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.event.listen
+import net.axay.kspigot.runnables.task
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -14,8 +20,40 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerTakeLecternBookEvent
 
+// mod kann spieler verwalten
+// toggle display?
+
 object ClaimListener {
     init {
+        task(sync = true, delay = 20L, period = 20L) {
+            for (player in Bukkit.getOnlinePlayers()) {
+                val loc = player.location
+                val owner = ClaimConfig.getClaimOwner(loc)
+                val message = if (owner == null) {
+                    literalText {
+                        grayText("Freier Chunk")
+                    }
+                } else if (owner != player.uniqueId) {
+                    literalText {
+                        grayText("Dieser Chunk gehört ")
+                        whiteText(Bukkit.getOfflinePlayer(owner).name ?: "Unbekannt")
+                    }
+                } else {
+                    literalText {
+                        grayText("Dieser Chunk gehört ")
+                        whiteText("dir")
+                    }
+                }
+                player.sendActionBar(message)
+            }
+        }
+
+        listen<PrePlayerAttackEntityEvent> { e ->
+            if (isProtected(e.player, e.attacked.location)) {
+                e.isCancelled = true
+            }
+        }
+
         listen<BlockPlaceEvent> { e ->
            if (isProtected(e.player, e.block.location)) {
                e.isCancelled = true
@@ -76,5 +114,10 @@ object ClaimListener {
 
 private fun isProtected(player: Player, location: Location): Boolean {
     val owner = ClaimConfig.getClaimOwner(location)
-    return owner != null && owner != player.uniqueId && !player.isOp && (player.gameMode == GameMode.SURVIVAL || player.gameMode == GameMode.ADVENTURE)
+    var friend = false
+    if (owner != null) {
+        val friends = ClaimConfig.getUserFriends(owner)
+        if (friends.contains(player.uniqueId)) friend = true
+    }
+    return owner != null && owner != player.uniqueId && !friend && !player.isOp && (player.gameMode == GameMode.SURVIVAL || player.gameMode == GameMode.ADVENTURE)
 }

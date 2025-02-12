@@ -114,6 +114,7 @@ object ClaimCommand {
                             } else {
                                 ClaimConfig.addUserFriend(player.uniqueId, friend)
                                 player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde zu deinen Freunden hinzugefügt.".serverInfo())
+                                Bukkit.getPlayer(friend)?.sendMessage("Der Spieler ${player.name} hat dich zu seinen Freunden hinzugefügt.".serverInfo())
                             }
                         }
                     }
@@ -171,18 +172,27 @@ object ClaimCommand {
 
 private fun listPlayerFriends(): CommandContext.() -> Unit = {
     val friends = ClaimConfig.getUserFriends(player.uniqueId)
+    val addedAsFriend = ClaimConfig.getFriendsAddedForUser(player.uniqueId)
 
-    if (friends.isEmpty()) {
-        player.sendMessage("Du hast keine Freunde hinzugefügt.".serverError())
-    } else {
-        player.sendMessage(literalText {
-            serverInfo()
-            whiteText("Deine Freunde:\n\n")
+    player.sendMessage(literalText {
+        serverInfo()
+        whiteText("Deine Freunde:\n")
+        if (friends.isEmpty()) {
+            grayText("(keine)\n")
+        } else {
             friends.forEach {
                 grayText("- ${Bukkit.getOfflinePlayer(it).name ?: "unbekannter Spieler"}\n")
             }
-        })
-    }
+        }
+        whiteText("Du wurdest von folgenden Spielern als Freund hinzugefügt:\n")
+        if (addedAsFriend.isEmpty()) {
+            grayText("(keine)\n")
+        } else {
+            addedAsFriend.forEach {
+                grayText("- ${Bukkit.getOfflinePlayer(it).name ?: "unbekannter Spieler"}\n")
+            }
+        }
+    })
 }
 
 private fun listPlayerChunks(): CommandContext.() -> Unit = {
@@ -193,7 +203,7 @@ private fun listPlayerChunks(): CommandContext.() -> Unit = {
     } else {
         player.sendMessage(literalText {
             serverInfo()
-            whiteText("Deine geclaimten Chunks:\n\n")
+            whiteText("Deine geclaimten Chunks:\n")
             claims.forEach {
                 grayText("- Chunk (${it.chunkX} / ${it.chunkZ}) in ${it.worldName}\n")
             }

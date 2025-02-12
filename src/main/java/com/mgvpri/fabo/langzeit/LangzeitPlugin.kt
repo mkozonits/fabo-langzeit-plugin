@@ -3,7 +3,7 @@ package com.mgvpri.fabo.langzeit
 import com.mgvpri.fabo.langzeit.claim.ClaimCommand
 import com.mgvpri.fabo.langzeit.claim.ClaimConfig
 import com.mgvpri.fabo.langzeit.claim.ClaimListener
-import com.mgvpri.fabo.langzeit.claim.ServerConfig
+import com.mgvpri.fabo.langzeit.config.LangzeitConfig
 import com.mgvpri.fabo.langzeit.service.BossBarManager
 import com.mgvpri.fabo.langzeit.service.ScoreboardManager
 import com.mgvpri.fabo.langzeit.service.WorldManager
@@ -21,7 +21,7 @@ class LangzeitPlugin : KSpigot() {
 
         logger.info("Starting Special Plugin for Server: ${ServerUtils.getServerName()}")
 
-        ServerConfig
+        LangzeitConfig
 
         BossBarManager
         ScoreboardManager
@@ -31,7 +31,7 @@ class LangzeitPlugin : KSpigot() {
         LangzeitMapGeneration
         LangzeitListener
 
-        if (ServerConfig.claimSystem) {
+        if (LangzeitConfig.claimSystem) {
             logger.info("Claim System enabled")
 
             ClaimConfig

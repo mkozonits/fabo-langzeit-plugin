@@ -48,6 +48,10 @@ object ClaimConfig {
         saveConfig()
     }
 
+    fun getFriendsAddedForUser(uuid: UUID): List<UUID> {
+        return claimUsers.filter { it.value?.friends?.contains(uuid) == true }.keys.toList()
+    }
+
     fun getUserFriends(uuid: UUID): List<UUID> {
         return claimUsers.getOrPut(uuid) { ClaimOwner() }!!.friends
     }

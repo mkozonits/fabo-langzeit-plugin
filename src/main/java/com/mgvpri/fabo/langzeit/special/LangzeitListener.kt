@@ -6,12 +6,19 @@ import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockFromToEvent
+import org.bukkit.event.entity.ExplosionPrimeEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import kotlin.math.abs
 
 object LangzeitListener {
     init {
+        listen<ExplosionPrimeEvent> { event ->
+            // prevent explosion damage, item destroy and fire
+            event.radius = 0.0f
+            event.fire = false
+        }
+        
         listen<PlayerJoinEvent> { event ->
             if (!event.player.isOp && event.player.isSurvivalMode() && event.player.location.world.name == LangzeitProperties.WORLD.name) {
                 if (abs(event.player.location.blockX) > LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION ||
