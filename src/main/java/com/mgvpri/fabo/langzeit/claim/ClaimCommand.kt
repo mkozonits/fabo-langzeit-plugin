@@ -23,6 +23,8 @@ import kotlin.math.abs
 const val PLAYER_MAX_CLAIMS = 4
 const val SUBSCRIBER_MAX_CLAIMS = 8
 
+enum class HelpType { BASIC, DETAILED, ADMIN }
+
 object ClaimCommand {
     init {
         val spawn = command("spawn", register = false) {
@@ -33,20 +35,7 @@ object ClaimCommand {
         spawn.register(true)
 
         val claim = command("claim", register = false) {
-            runs {
-                player.sendMessage(literalText {
-                    serverInfo()
-                    whiteText("Claim-System:\n\n")
-                    yellowText("/claim help")
-                    grayText("  - Erklärt alle Befehle zum Claim-System\n")
-                    yellowText("/claim chunk")
-                    grayText("  - Verwalte deine Chunks\n")
-                    yellowText("/claim friend")
-                    grayText("  - Verwalte deine Freunde, die auf deinen Chunks mitbauen dürfen\n")
-                    yellowText("/spawn")
-                    grayText("  - Teleportiere dich zum Spawn\n")
-                })
-            }
+            runs(outputHelp(HelpType.BASIC))
             literal("chunk") {
                 runs(listPlayerChunks())
                 literal("add") {
@@ -141,29 +130,100 @@ object ClaimCommand {
                     runs(listPlayerFriends())
                 }
             }
-            literal("help") {
-                runs {
-                    player.sendMessage(literalText {
-                        serverInfo()
-                        whiteText("Alle Befehle für das Claim-System:\n\n")
-                        yellowText("/claim help")
-                        grayText("  - Erklärt alle Befehle zum Claim-System\n")
-                        yellowText("/claim chunk add")
-                        grayText("  - Sichere dir den Chunk, in dem du gerade stehst\n")
-                        yellowText("/claim chunk remove")
-                        grayText("  - Entferne den Chunk, in dem du gerade stehst\n")
-                        yellowText("/claim chunk list")
-                        grayText("  - Zeige alle geclaimten Chunks an\n")
-                        yellowText("/claim friend add <Spieler>")
-                        grayText("  - Füge einen Spieler zu deinen Freunden hinzu\n")
-                        yellowText("/claim friend remove <Spieler>")
-                        grayText("  - Entferne einen Spieler von deinen Freunden\n")
-                        yellowText("/claim friend list")
-                        grayText("  - Zeige alle Freunde an\n")
-                        yellowText("/spawn")
-                        grayText("  - Teleportiere dich zum Spawn\n")
-                    })
+            literal("admin") {
+                runs(outputHelp(HelpType.ADMIN))
+                literal("add") {
+                    argument("player", StringArgumentType.word()) {
+                        suggestList { Bukkit.getOnlinePlayers().map { it.name } }
+                        runs {
+                            if (!player.isAdmin()) {
+                                player.sendMessage("Du hast keine Berechtigung für diesen Befehl.".serverError())
+                                return@runs
+                            }
+
+                            val futureChunkHolder = Bukkit.getPlayerExact(getArgument<String>("player"))?.uniqueId
+                            val chunk = player.location.chunk
+                            val claimEntry = ClaimEntry(player.location.world.name, chunk.x, chunk.z)
+                            val owner = ClaimConfig.getClaimOwner(claimEntry)
+
+                            if (futureChunkHolder == null) {
+                                player.sendMessage("Dieser Spieler ist nicht online.".serverError())
+                            } else if (owner != null) {
+                                player.sendMessage("Dieser Chunk ist bereits von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} geclaimt.".serverError())
+                            } else {
+                                ClaimConfig.addUserClaim(futureChunkHolder, claimEntry)
+                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich für ${Bukkit.getOfflinePlayer(futureChunkHolder).name ?: "unbekanntem Spieler"} geclaimt.".serverInfo())
+                            }
+                        }
+                    }
                 }
+                literal("remove") {
+                    runs {
+                        if (!player.isAdmin()) {
+                            player.sendMessage("Du hast keine Berechtigung für diesen Befehl.".serverError())
+                            return@runs
+                        }
+
+                        val chunk = player.location.chunk
+                        val claimEntry = ClaimEntry(player.location.world.name, chunk.x, chunk.z)
+                        val owner = ClaimConfig.getClaimOwner(claimEntry)
+
+                        if (owner == null) {
+                            player.sendMessage("Dieser Chunk ist nicht geclaimt.".serverError())
+                        } else {
+                            ClaimConfig.removeUserClaim(owner, claimEntry)
+                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} entfernt.".serverInfo())
+                        }
+                    }
+                }
+                literal("stats") {
+                    argument("player", StringArgumentType.word()) {
+                        suggestList { Bukkit.getOfflinePlayers().map { it.name } }
+                        runs {
+                            if (!player.isAdmin()) {
+                                player.sendMessage("Du hast keine Berechtigung für diesen Befehl.".serverError())
+                                return@runs
+                            }
+
+                            val target = Bukkit.getOfflinePlayer(getArgument<String>("player")).uniqueId
+                            val claims = ClaimConfig.getUserClaims(target)
+                            val friends = ClaimConfig.getUserFriends(target)
+                            val addedAsFriend = ClaimConfig.getFriendsAddedForUser(target)
+
+                            player.sendMessage(literalText {
+                                serverInfo()
+                                whiteText("Spielerinfos für ${Bukkit.getOfflinePlayer(target).name ?: "unbekannter Spieler"}:\n")
+                                whiteText("Geclaimte Chunks:\n")
+                                if (claims.isEmpty()) {
+                                    grayText("(keine)\n")
+                                } else {
+                                    claims.forEach {
+                                        grayText("- Chunk (${it.chunkX} / ${it.chunkZ}) in ${it.worldName}\n")
+                                    }
+                                }
+                                whiteText("Freunde:\n")
+                                if (friends.isEmpty()) {
+                                    grayText("(keine)\n")
+                                } else {
+                                    friends.forEach {
+                                        grayText("- ${Bukkit.getOfflinePlayer(it).name ?: "unbekannter Spieler"}\n")
+                                    }
+                                }
+                                whiteText("Der Spieler wurde von folgenden Spielern als Freund hinzugefügt:\n")
+                                if (addedAsFriend.isEmpty()) {
+                                    grayText("(keine)\n")
+                                } else {
+                                    addedAsFriend.forEach {
+                                        grayText("- ${Bukkit.getOfflinePlayer(it).name ?: "unbekannter Spieler"}\n")
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+            literal("help") {
+                runs(outputHelp(HelpType.DETAILED))
             }
         }
         claim.register(true)
@@ -211,5 +271,73 @@ private fun listPlayerChunks(): CommandContext.() -> Unit = {
     }
 }
 
+private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
+    val isAdminPlayer = player.isAdmin()
+
+    val message = when (helpType) {
+        HelpType.BASIC -> literalText {
+            serverInfo()
+            whiteText("Claim-System:\n\n")
+            yellowText("/claim help")
+            grayText(" - Erklärt alle Befehle zum Claim-System\n")
+            yellowText("/claim chunk")
+            grayText(" - Verwalte deine Chunks\n")
+            yellowText("/claim friend")
+            grayText(" - Verwalte deine Freunde, die auf deinen Chunks mitbauen dürfen\n")
+            yellowText("/spawn")
+            grayText(" - Teleportiere dich zum Spawn\n")
+            if (isAdminPlayer) {
+                yellowText("/claim admin")
+                grayText(" - Admin-Befehle für Mods/Admins\n")
+            }
+        }
+        HelpType.DETAILED -> literalText {
+            serverInfo()
+            whiteText("Alle Befehle für das Claim-System:\n\n")
+            yellowText("/claim help")
+            grayText(" - Erklärt alle Befehle zum Claim-System\n")
+            yellowText("/claim chunk add")
+            grayText(" - Sichere dir den Chunk, in dem du gerade stehst\n")
+            yellowText("/claim chunk remove")
+            grayText(" - Entferne den Chunk, in dem du gerade stehst\n")
+            yellowText("/claim chunk list")
+            grayText(" - Zeige alle geclaimten Chunks an\n")
+            yellowText("/claim friend add <Spieler>")
+            grayText(" - Füge einen Spieler zu deinen Freunden hinzu\n")
+            yellowText("/claim friend remove <Spieler>")
+            grayText(" - Entferne einen Spieler von deinen Freunden\n")
+            yellowText("/claim friend list")
+            grayText(" - Zeige alle Freunde an\n")
+            yellowText("/spawn")
+            grayText(" - Teleportiere dich zum Spawn\n")
+            if (isAdminPlayer) {
+                yellowText("/claim admin add <Spieler>")
+                grayText(" - Sichert den aktuellen Chunk für einen Spieler (kein Limit)\n")
+                yellowText("/claim admin remove")
+                grayText(" - Entfernt den aktuellen Chunk für den dazugehörigen Spieler\n")
+                yellowText("/claim admin stats <Spieler>")
+                grayText(" - Zeigt alle Spielerinfos an\n")
+            }
+        }
+        HelpType.ADMIN -> literalText {
+            if (isAdminPlayer) {
+                serverInfo()
+                whiteText("Alle Admin-Befehle für das Claim-System:\n\n")
+                yellowText("/claim admin add <Spieler>")
+                grayText(" - Sichert den aktuellen Chunk für einen Spieler (kein Limit)\n")
+                yellowText("/claim admin remove")
+                grayText(" - Entfernt den aktuellen Chunk für den dazugehörigen Spieler\n")
+                yellowText("/claim admin stats <Spieler>")
+                grayText(" - Zeigt alle Spielerinfos an\n")
+            } else {
+                serverError()
+                whiteText("Du hast keine Berechtigung für diesen Befehl.\n")
+            }
+        }
+    }
+    player.sendMessage(message)
+}
+
 private fun Player.isSub() = listOf(RankConfig.Rank.SUBSCRIBER, RankConfig.Rank.FAMOUS, RankConfig.Rank.BUILDER).contains(RankConfig.getRank(this))
 private fun Player.isNormalPlayer() = RankConfig.getRank(this) == RankConfig.Rank.PLAYER
+private fun Player.isAdmin() = listOf(RankConfig.Rank.MODERATOR, RankConfig.Rank.ADMIN).contains(RankConfig.getRank(this)) || isOp
