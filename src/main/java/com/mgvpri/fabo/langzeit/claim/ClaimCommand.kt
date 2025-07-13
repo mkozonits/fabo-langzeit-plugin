@@ -1,17 +1,11 @@
 package com.mgvpri.fabo.langzeit.claim
 
 import com.mgvpri.fabo.base.rabbitmq.RankConfig
-import com.mgvpri.fabo.langzeit.utils.*
 import com.mgvpri.fabo.langzeit.special.LangzeitProperties
+import com.mgvpri.fabo.langzeit.utils.*
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.kspigot.chat.literalText
-import net.axay.kspigot.commands.CommandContext
-import net.axay.kspigot.commands.argument
-import net.axay.kspigot.commands.command
-import net.axay.kspigot.commands.literal
-import net.axay.kspigot.commands.register
-import net.axay.kspigot.commands.runs
-import net.axay.kspigot.commands.suggestList
+import net.axay.kspigot.commands.*
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import kotlin.math.abs

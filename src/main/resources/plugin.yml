@@ -2,10 +2,10 @@ name: fabo-langzeit-plugin
 version: 2.0
 main: com.mgvpri.fabo.langzeit.LangzeitPlugin
 api-version: 1.21
-authors: [mgvpri]
+authors: [ mgvpri ]
 description: langzeit plugin for fabo
 
-depend: [fabo-base-plugin]
+depend: [ fabo-base-plugin ]
 
 libraries:
   - net.axay:kspigot:1.21.0

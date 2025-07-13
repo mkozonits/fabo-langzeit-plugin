@@ -1,6 +1,7 @@
 package com.mgvpri.fabo.langzeit.claim
 
-import com.mgvpri.fabo.langzeit.utils.*
+import com.mgvpri.fabo.langzeit.utils.grayText
+import com.mgvpri.fabo.langzeit.utils.whiteText
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.event.listen

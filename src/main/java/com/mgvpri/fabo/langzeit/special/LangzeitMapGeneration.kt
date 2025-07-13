@@ -2,7 +2,8 @@ package com.mgvpri.fabo.langzeit.special
 
 import com.mgvpri.fabo.base.manager.BossBarManager
 import com.mgvpri.fabo.langzeit.LangzeitPlugin
-import com.mgvpri.fabo.langzeit.utils.*
+import com.mgvpri.fabo.langzeit.utils.serverError
+import com.mgvpri.fabo.langzeit.utils.whiteText
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.register
@@ -17,8 +18,7 @@ import org.bukkit.Chunk
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
 import java.io.File
-import java.util.LinkedList
-import java.util.Queue
+import java.util.*
 import kotlin.math.abs
 
 private var progress = 0L

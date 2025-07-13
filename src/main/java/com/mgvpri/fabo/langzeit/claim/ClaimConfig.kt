@@ -4,7 +4,7 @@ import com.mgvpri.fabo.langzeit.LangzeitPlugin
 import org.bukkit.Location
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import java.util.UUID
+import java.util.*
 
 object ClaimConfig {
     private const val CONFIG_FILE = "./config/claim-config.yml"

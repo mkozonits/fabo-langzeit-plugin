@@ -5,8 +5,8 @@ import com.mgvpri.fabo.langzeit.claim.ClaimCommand
 import com.mgvpri.fabo.langzeit.claim.ClaimConfig
 import com.mgvpri.fabo.langzeit.claim.ClaimListener
 import com.mgvpri.fabo.langzeit.config.LangzeitConfig
-import com.mgvpri.fabo.langzeit.special.LangzeitMapGeneration
 import com.mgvpri.fabo.langzeit.special.LangzeitListener
+import com.mgvpri.fabo.langzeit.special.LangzeitMapGeneration
 import net.axay.kspigot.main.KSpigot
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
