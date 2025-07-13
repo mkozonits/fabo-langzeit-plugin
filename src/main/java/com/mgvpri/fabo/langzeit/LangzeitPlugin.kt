@@ -1,15 +1,12 @@
 package com.mgvpri.fabo.langzeit
 
+import com.mgvpri.fabo.base.utils.getServerName
 import com.mgvpri.fabo.langzeit.claim.ClaimCommand
 import com.mgvpri.fabo.langzeit.claim.ClaimConfig
 import com.mgvpri.fabo.langzeit.claim.ClaimListener
 import com.mgvpri.fabo.langzeit.config.LangzeitConfig
-import com.mgvpri.fabo.langzeit.service.BossBarManager
-import com.mgvpri.fabo.langzeit.service.ScoreboardManager
-import com.mgvpri.fabo.langzeit.service.WorldManager
 import com.mgvpri.fabo.langzeit.special.LangzeitMapGeneration
 import com.mgvpri.fabo.langzeit.special.LangzeitListener
-import com.mgvpri.fabo.langzeit.utils.ServerUtils
 import net.axay.kspigot.main.KSpigot
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
@@ -19,13 +16,9 @@ class LangzeitPlugin : KSpigot() {
         plugin = this
         LOGGER = plugin.logger
 
-        logger.info("Starting Special Plugin for Server: ${ServerUtils.getServerName()}")
+        logger.info("Starting Special Plugin for Server: ${getServerName()}")
 
         LangzeitConfig
-
-        BossBarManager
-        ScoreboardManager
-        WorldManager
 
         // Special Features
         LangzeitMapGeneration

@@ -1,12 +1,12 @@
 package com.mgvpri.fabo.langzeit.claim
 
-import com.mgvpri.fabo.rankplugin.rabbitmq.RankConfig
+import com.mgvpri.fabo.base.rabbitmq.RankConfig
+import com.mgvpri.fabo.base.utils.grayText
+import com.mgvpri.fabo.base.utils.langzeitInfo
+import com.mgvpri.fabo.base.utils.serverError
+import com.mgvpri.fabo.base.utils.whiteText
+import com.mgvpri.fabo.base.utils.yellowText
 import com.mgvpri.fabo.langzeit.special.LangzeitProperties
-import com.mgvpri.fabo.langzeit.utils.grayText
-import com.mgvpri.fabo.langzeit.utils.serverError
-import com.mgvpri.fabo.langzeit.utils.serverInfo
-import com.mgvpri.fabo.langzeit.utils.whiteText
-import com.mgvpri.fabo.langzeit.utils.yellowText
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.commands.CommandContext
@@ -58,7 +58,7 @@ object ClaimCommand {
                             } else {
                                 ClaimConfig.addUserClaim(player.uniqueId, claimEntry)
                                 val remainingClaims = (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
-                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich geclaimt. Du hast noch $remainingClaims Chunks zum claimen übrig.".serverInfo())
+                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich geclaimt. Du hast noch $remainingClaims Chunks zum claimen übrig.".langzeitInfo())
                             }
                         }
                     }
@@ -77,7 +77,7 @@ object ClaimCommand {
                         } else {
                             ClaimConfig.removeUserClaim(player.uniqueId, claimEntry)
                             val remainingClaims = (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
-                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von deinen Claims entfernt. Du hast jetzt $remainingClaims Chunks zum claimen übrig.".serverInfo())
+                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von deinen Claims entfernt. Du hast jetzt $remainingClaims Chunks zum claimen übrig.".langzeitInfo())
                         }
                     }
                 }
@@ -102,8 +102,8 @@ object ClaimCommand {
                                 player.sendMessage("Dieser Spieler ist bereits in deiner Freundesliste.".serverError())
                             } else {
                                 ClaimConfig.addUserFriend(player.uniqueId, friend)
-                                player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde zu deinen Freunden hinzugefügt.".serverInfo())
-                                Bukkit.getPlayer(friend)?.sendMessage("Der Spieler ${player.name} hat dich zu seinen Freunden hinzugefügt.".serverInfo())
+                                player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde zu deinen Freunden hinzugefügt.".langzeitInfo())
+                                Bukkit.getPlayer(friend)?.sendMessage("Der Spieler ${player.name} hat dich zu seinen Freunden hinzugefügt.".langzeitInfo())
                             }
                         }
                     }
@@ -121,7 +121,7 @@ object ClaimCommand {
                                 player.sendMessage("Dieser Spieler ist nicht in deiner Freundesliste.".serverError())
                             } else {
                                 ClaimConfig.removeUserFriend(player.uniqueId, friend)
-                                player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde von deinen Freunden entfernt.".serverInfo())
+                                player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde von deinen Freunden entfernt.".langzeitInfo())
                             }
                         }
                     }
@@ -152,7 +152,7 @@ object ClaimCommand {
                                 player.sendMessage("Dieser Chunk ist bereits von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} geclaimt.".serverError())
                             } else {
                                 ClaimConfig.addUserClaim(futureChunkHolder, claimEntry)
-                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich für ${Bukkit.getOfflinePlayer(futureChunkHolder).name ?: "unbekanntem Spieler"} geclaimt.".serverInfo())
+                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich für ${Bukkit.getOfflinePlayer(futureChunkHolder).name ?: "unbekanntem Spieler"} geclaimt.".langzeitInfo())
                             }
                         }
                     }
@@ -172,7 +172,7 @@ object ClaimCommand {
                             player.sendMessage("Dieser Chunk ist nicht geclaimt.".serverError())
                         } else {
                             ClaimConfig.removeUserClaim(owner, claimEntry)
-                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} entfernt.".serverInfo())
+                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} entfernt.".langzeitInfo())
                         }
                     }
                 }
@@ -191,7 +191,7 @@ object ClaimCommand {
                             val addedAsFriend = ClaimConfig.getFriendsAddedForUser(target)
 
                             player.sendMessage(literalText {
-                                serverInfo()
+                                langzeitInfo()
                                 whiteText("Spielerinfos für ${Bukkit.getOfflinePlayer(target).name ?: "unbekannter Spieler"}:\n")
                                 whiteText("Geclaimte Chunks:\n")
                                 if (claims.isEmpty()) {
@@ -235,7 +235,7 @@ private fun listPlayerFriends(): CommandContext.() -> Unit = {
     val addedAsFriend = ClaimConfig.getFriendsAddedForUser(player.uniqueId)
 
     player.sendMessage(literalText {
-        serverInfo()
+        langzeitInfo()
         whiteText("Deine Freunde:\n")
         if (friends.isEmpty()) {
             grayText("(keine)\n")
@@ -262,7 +262,7 @@ private fun listPlayerChunks(): CommandContext.() -> Unit = {
         player.sendMessage("Du hast bisher keine Chunks geclaimt.".serverError())
     } else {
         player.sendMessage(literalText {
-            serverInfo()
+            langzeitInfo()
             whiteText("Deine geclaimten Chunks:\n")
             claims.forEach {
                 grayText("- Chunk (${it.chunkX} / ${it.chunkZ}) in ${it.worldName}\n")
@@ -276,7 +276,7 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
 
     val message = when (helpType) {
         HelpType.BASIC -> literalText {
-            serverInfo()
+            langzeitInfo()
             whiteText("Claim-System:\n\n")
             yellowText("/claim help")
             grayText(" - Erklärt alle Befehle zum Claim-System\n")
@@ -292,7 +292,7 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
             }
         }
         HelpType.DETAILED -> literalText {
-            serverInfo()
+            langzeitInfo()
             whiteText("Alle Befehle für das Claim-System:\n\n")
             yellowText("/claim help")
             grayText(" - Erklärt alle Befehle zum Claim-System\n")
@@ -321,7 +321,7 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
         }
         HelpType.ADMIN -> literalText {
             if (isAdminPlayer) {
-                serverInfo()
+                langzeitInfo()
                 whiteText("Alle Admin-Befehle für das Claim-System:\n\n")
                 yellowText("/claim admin add <Spieler>")
                 grayText(" - Sichert den aktuellen Chunk für einen Spieler (kein Limit)\n")

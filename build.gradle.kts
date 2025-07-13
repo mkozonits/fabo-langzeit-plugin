@@ -20,7 +20,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-    implementation(files("lib/fabo-rank-plugin-2.0.jar"))
+    implementation(files("lib/fabo-base-plugin-2.0.jar"))
 }
 
 tasks {

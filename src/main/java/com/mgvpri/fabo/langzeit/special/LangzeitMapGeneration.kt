@@ -1,9 +1,8 @@
 package com.mgvpri.fabo.langzeit.special
 
+import com.mgvpri.fabo.base.manager.BossBarManager
 import com.mgvpri.fabo.langzeit.LangzeitPlugin
-import com.mgvpri.fabo.langzeit.service.BossBarManager.setAllPlayerBossBars
-import com.mgvpri.fabo.langzeit.utils.serverError
-import com.mgvpri.fabo.langzeit.utils.whiteText
+import com.mgvpri.fabo.base.utils.*
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.register
@@ -29,6 +28,7 @@ private var total = 0L
 private var paused = true
 
 private val taskQueue: Queue<ChunkData> = LinkedList()
+private val bossBarManager = BossBarManager()
 
 data class ChunkData(val x: Int, val z: Int, val emptyChunk: Boolean = false)
 data class BlockTypeData(val type: Material, val data: BlockData)
@@ -187,7 +187,7 @@ private fun processNextChunkInQueue() {
         processChunk(chunk, nextChunk.emptyChunk)
         realProcessed++
 
-        setAllPlayerBossBars(
+        bossBarManager.setForAll(
             literalText { whiteText("Chunk (${chunk.x}/${chunk.z}) wird generiert... (Fortschritt: ${progress}/${total})") },
             progress.toFloat() / total.toFloat(),
             BossBar.Color.YELLOW
@@ -197,7 +197,7 @@ private fun processNextChunkInQueue() {
         if (realProcessed % 100 == 0L) {
             paused = true
             taskRunLater(1, true) {
-                setAllPlayerBossBars(
+                bossBarManager.setForAll(
                     literalText { whiteText("Zwischenstand wird gespeichert... (Fortschritt: ${progress}/${total})") },
                     progress.toFloat() / total.toFloat(),
                     BossBar.Color.BLUE
@@ -220,7 +220,7 @@ private fun processNextChunkInQueue() {
     } else {
         skipped++
 
-        setAllPlayerBossBars(
+        bossBarManager.setForAll(
             literalText { whiteText("Chunk (${chunk.x}/${chunk.z}) wird geskippt... (Fortschritt: ${progress}/${total})") },
             progress.toFloat() / total.toFloat(),
             BossBar.Color.YELLOW
