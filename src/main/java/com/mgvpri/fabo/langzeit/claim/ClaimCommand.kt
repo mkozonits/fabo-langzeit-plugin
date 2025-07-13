@@ -57,7 +57,8 @@ object ClaimCommand {
                                 player.sendMessage("Dieser Chunk ist bereits von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} geclaimt.".serverError())
                             } else {
                                 ClaimConfig.addUserClaim(player.uniqueId, claimEntry)
-                                val remainingClaims = (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
+                                val remainingClaims =
+                                    (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
                                 player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich geclaimt. Du hast noch $remainingClaims Chunks zum claimen übrig.".langzeitInfo())
                             }
                         }
@@ -76,7 +77,8 @@ object ClaimCommand {
                             player.sendMessage("Dieser Chunk ist von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} geclaimt.".serverError())
                         } else {
                             ClaimConfig.removeUserClaim(player.uniqueId, claimEntry)
-                            val remainingClaims = (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
+                            val remainingClaims =
+                                (if (player.isSub()) SUBSCRIBER_MAX_CLAIMS else if (player.isNormalPlayer()) PLAYER_MAX_CLAIMS else 1000) - claims.size
                             player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von deinen Claims entfernt. Du hast jetzt $remainingClaims Chunks zum claimen übrig.".langzeitInfo())
                         }
                     }
@@ -103,7 +105,8 @@ object ClaimCommand {
                             } else {
                                 ClaimConfig.addUserFriend(player.uniqueId, friend)
                                 player.sendMessage("Der Spieler ${Bukkit.getOfflinePlayer(friend).name ?: "unbekannter Spieler"} wurde zu deinen Freunden hinzugefügt.".langzeitInfo())
-                                Bukkit.getPlayer(friend)?.sendMessage("Der Spieler ${player.name} hat dich zu seinen Freunden hinzugefügt.".langzeitInfo())
+                                Bukkit.getPlayer(friend)
+                                    ?.sendMessage("Der Spieler ${player.name} hat dich zu seinen Freunden hinzugefügt.".langzeitInfo())
                             }
                         }
                     }
@@ -152,7 +155,13 @@ object ClaimCommand {
                                 player.sendMessage("Dieser Chunk ist bereits von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} geclaimt.".serverError())
                             } else {
                                 ClaimConfig.addUserClaim(futureChunkHolder, claimEntry)
-                                player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich für ${Bukkit.getOfflinePlayer(futureChunkHolder).name ?: "unbekanntem Spieler"} geclaimt.".langzeitInfo())
+                                player.sendMessage(
+                                    "Der Chunk (${chunk.x} / ${chunk.z}) wurde erfolgreich für ${
+                                        Bukkit.getOfflinePlayer(
+                                            futureChunkHolder
+                                        ).name ?: "unbekanntem Spieler"
+                                    } geclaimt.".langzeitInfo()
+                                )
                             }
                         }
                     }
@@ -172,7 +181,13 @@ object ClaimCommand {
                             player.sendMessage("Dieser Chunk ist nicht geclaimt.".serverError())
                         } else {
                             ClaimConfig.removeUserClaim(owner, claimEntry)
-                            player.sendMessage("Der Chunk (${chunk.x} / ${chunk.z}) wurde von ${Bukkit.getOfflinePlayer(owner).name ?: "unbekanntem Spieler"} entfernt.".langzeitInfo())
+                            player.sendMessage(
+                                "Der Chunk (${chunk.x} / ${chunk.z}) wurde von ${
+                                    Bukkit.getOfflinePlayer(
+                                        owner
+                                    ).name ?: "unbekanntem Spieler"
+                                } entfernt.".langzeitInfo()
+                            )
                         }
                     }
                 }
@@ -291,6 +306,7 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
                 grayText(" - Admin-Befehle für Mods/Admins\n")
             }
         }
+
         HelpType.DETAILED -> literalText {
             langzeitInfo()
             whiteText("Alle Befehle für das Claim-System:\n\n")
@@ -319,6 +335,7 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
                 grayText(" - Zeigt alle Spielerinfos an\n")
             }
         }
+
         HelpType.ADMIN -> literalText {
             if (isAdminPlayer) {
                 langzeitInfo()
@@ -338,6 +355,12 @@ private fun outputHelp(helpType: HelpType): CommandContext.() -> Unit = {
     player.sendMessage(message)
 }
 
-private fun Player.isSub() = listOf(RankConfig.Rank.SUBSCRIBER, RankConfig.Rank.FAMOUS, RankConfig.Rank.BUILDER).contains(RankConfig.getRank(this))
+private fun Player.isSub() = listOf(
+    RankConfig.Rank.SUBSCRIBER,
+    RankConfig.Rank.FAMOUS,
+    RankConfig.Rank.BUILDER
+).contains(RankConfig.getRank(this))
+
 private fun Player.isNormalPlayer() = RankConfig.getRank(this) == RankConfig.Rank.PLAYER
-private fun Player.isAdmin() = listOf(RankConfig.Rank.MODERATOR, RankConfig.Rank.ADMIN).contains(RankConfig.getRank(this)) || isOp
+private fun Player.isAdmin() =
+    listOf(RankConfig.Rank.MODERATOR, RankConfig.Rank.ADMIN).contains(RankConfig.getRank(this)) || isOp

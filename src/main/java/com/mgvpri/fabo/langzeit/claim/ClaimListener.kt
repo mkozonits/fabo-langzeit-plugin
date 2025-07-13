@@ -54,9 +54,9 @@ object ClaimListener {
         }
 
         listen<BlockPlaceEvent> { e ->
-           if (isProtected(e.player, e.block.location)) {
-               e.isCancelled = true
-           }
+            if (isProtected(e.player, e.block.location)) {
+                e.isCancelled = true
+            }
         }
 
         listen<BlockBreakEvent> { e ->

@@ -99,7 +99,7 @@ private fun processChunk(chunk: Chunk, emptyChunk: Boolean = false) {
 
     val blockStates = arrayListOf<BlockTypeData>()
 
-    for (y in chunk.world.maxHeight-1 downTo chunk.world.minHeight step 1) {
+    for (y in chunk.world.maxHeight - 1 downTo chunk.world.minHeight step 1) {
         for (x in 0 until 16) {
             for (z in 0 until 16) {
                 blockStates.add(chunk.getBlock(x, y, z).let { BlockTypeData(it.type, it.state.blockData) })
@@ -116,7 +116,8 @@ private fun processChunk(chunk: Chunk, emptyChunk: Boolean = false) {
                     block.setType(Material.BEDROCK, false)
                 } else {
                     val savedBlock = getBlockStateFromSingleArray(blockStates, x, y, z)
-                    val saveOppositeBlockAbove = if (y > chunk.world.minHeight) getBlockStateFromSingleArray(blockStates, x, y - 1, z) else null
+                    val saveOppositeBlockAbove =
+                        if (y > chunk.world.minHeight) getBlockStateFromSingleArray(blockStates, x, y - 1, z) else null
 
                     var alreadySet = false
                     if (saveOppositeBlockAbove != null && (saveOppositeBlockAbove.type == Material.AIR || saveOppositeBlockAbove.type == Material.WATER)) {

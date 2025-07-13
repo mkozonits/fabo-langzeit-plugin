@@ -18,7 +18,7 @@ object LangzeitListener {
             event.radius = 0.0f
             event.fire = false
         }
-        
+
         listen<PlayerJoinEvent> { event ->
             if (!event.player.isOp && event.player.isSurvivalMode() && event.player.location.world.name == LangzeitProperties.WORLD.name) {
                 if (abs(event.player.location.blockX) > LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION ||
@@ -36,7 +36,8 @@ object LangzeitListener {
                 val location = event.to
                 if (location.blockX !in -LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION..LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION ||
                     location.blockZ !in -LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION..LangzeitProperties.MAX_BLOCKS_EACH_DIRECTION ||
-                    location.blockY !in -64..location.world.maxHeight-2) {
+                    location.blockY !in -64..location.world.maxHeight - 2
+                ) {
                     event.isCancelled = true
                     event.player.setRespawnLocation(LangzeitProperties.SPAWN_LOCATION, true)
                     event.player.kill()
