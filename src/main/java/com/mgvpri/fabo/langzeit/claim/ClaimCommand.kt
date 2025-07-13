@@ -1,11 +1,7 @@
 package com.mgvpri.fabo.langzeit.claim
 
 import com.mgvpri.fabo.base.rabbitmq.RankConfig
-import com.mgvpri.fabo.base.utils.grayText
-import com.mgvpri.fabo.base.utils.langzeitInfo
-import com.mgvpri.fabo.base.utils.serverError
-import com.mgvpri.fabo.base.utils.whiteText
-import com.mgvpri.fabo.base.utils.yellowText
+import com.mgvpri.fabo.langzeit.utils.*
 import com.mgvpri.fabo.langzeit.special.LangzeitProperties
 import com.mojang.brigadier.arguments.StringArgumentType
 import net.axay.kspigot.chat.literalText

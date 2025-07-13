@@ -2,7 +2,7 @@ package com.mgvpri.fabo.langzeit.special
 
 import com.mgvpri.fabo.base.manager.BossBarManager
 import com.mgvpri.fabo.langzeit.LangzeitPlugin
-import com.mgvpri.fabo.base.utils.*
+import com.mgvpri.fabo.langzeit.utils.*
 import net.axay.kspigot.chat.literalText
 import net.axay.kspigot.commands.command
 import net.axay.kspigot.commands.register
